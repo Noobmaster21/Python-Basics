@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+
+INPUT='project-names.csv'
+declare -a fname
+declare -a lname
+declare -a job
+declare -a dept
+declare -a user
+declare -a pass
+
+while IFS=, read -r FirstName LastName JobTitle Department Username Password;
+do
+	fname+=("$FirstName")
+	lname+=("$LastName")
+	job+=("$JobTitle")
+	dept+=("$Department")
+	user+=("$Username")
+	pass+=("$Password")
+
+done<$INPUT
+
+for index in "${!user[@]}";
+do
+	sudo groupadd "${dept[$index]}";
+	sudo useradd -g "${dept[$index]}" \
+		     -d "/home/${user[$index]}" \
+		     -s "/bin/nologin" \
+		     -c "${job[$index]}" \
+		     -p "${pass[$index]}" \
+		     "${user[$index]}"
+	     done
